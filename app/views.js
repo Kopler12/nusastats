@@ -131,10 +131,10 @@ export function renderPopulation(root) {
     </div>
     <div class="table-wrap"><table class="data-table" id="prov-table">
       <thead><tr>
-        <th data-key="rank">#</th>
-        <th data-key="name">Province ⇅</th>
-        <th data-key="pop" class="num">Population (m) ⇅</th>
-        <th data-key="share" class="num">Share ⇅</th>
+        <th data-key="rank" aria-sort="ascending">#</th>
+        <th data-key="name" aria-sort="none">Province ⇅</th>
+        <th data-key="pop" class="num" aria-sort="none">Population (m) ⇅</th>
+        <th data-key="share" class="num" aria-sort="none">Share ⇅</th>
       </tr></thead>
       <tbody id="prov-body"></tbody>
     </table></div>
@@ -171,6 +171,11 @@ export function renderPopulation(root) {
       const av = a[sortKey];
       const bv = b[sortKey];
       return (typeof av === 'string' ? av.localeCompare(bv) : av - bv) * sortDir;
+    });
+    /* Tell screen readers which column is sorted, and in which direction. */
+    root.querySelectorAll('#prov-table th[data-key]').forEach((th) => {
+      th.setAttribute('aria-sort', th.dataset.key === sortKey
+        ? (sortDir === 1 ? 'ascending' : 'descending') : 'none');
     });
     body.innerHTML = rows.map((p) => `<tr><td>${p.rank}</td><td>${p.name}</td>
       <td class="num">${p.pop.toFixed(1)}</td><td class="num">${p.share.toFixed(1)}%</td></tr>`).join('')
